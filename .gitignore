@@ -1,0 +1,8 @@
+.*
+*.o
+*.a
+*.ko
+*.so
+!.gitignore
+tags
+cscope.*
