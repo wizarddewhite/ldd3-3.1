@@ -8,7 +8,8 @@ ifeq ($(KERNELRELEASE),)
 
     # Assume the source tree is where the running kernel was built
     # You should set KERNELDIR in the environment if it's elsewhere
-    KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+    # KERNELDIR ?= /lib/modules/$(shell uname -r)/build
+    KERNELDIR ?= ../../linux-2.6
     # The current directory is passed to sub-makes as argument
     PWD := $(shell pwd)
 
@@ -25,8 +26,9 @@ clean:
 
 else
     # called from kernel build system: just declare what our modules are
-    obj-m := hello.o hellop.o seq.o jit.o jiq.o sleepy.o complete.o \
-             silly.o faulty.o kdatasize.o kdataalign.o
+    #obj-m := hello.o hellop.o seq.o jit.o jiq.o sleepy.o complete.o \
+    #         silly.o faulty.o kdatasize.o kdataalign.o
+    obj-m := hello.o
 endif
 
 

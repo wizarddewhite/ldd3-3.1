@@ -3,6 +3,9 @@
 *.a
 *.ko
 *.so
+*.mod.c
+*.order
+Module.symvers
 !.gitignore
 tags
 cscope.*
