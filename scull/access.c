@@ -80,7 +80,7 @@ struct file_operations scull_sngl_fops = {
 	.llseek =     	scull_llseek,
 	.read =       	scull_read,
 	.write =      	scull_write,
-	.ioctl =      	scull_ioctl,
+	.unlocked_ioctl =      	scull_ioctl,
 	.open =       	scull_s_open,
 	.release =    	scull_s_release,
 };
@@ -95,7 +95,7 @@ struct file_operations scull_sngl_fops = {
 static struct scull_dev scull_u_device;
 static int scull_u_count;	/* initialized to 0 by default */
 static uid_t scull_u_owner;	/* initialized to 0 by default */
-static spinlock_t scull_u_lock = SPIN_LOCK_UNLOCKED;
+static spinlock_t scull_u_lock = __SPIN_LOCK_UNLOCKED(scull_u_lock );
 
 static int scull_u_open(struct inode *inode, struct file *filp)
 {
@@ -103,15 +103,15 @@ static int scull_u_open(struct inode *inode, struct file *filp)
 
 	spin_lock(&scull_u_lock);
 	if (scull_u_count && 
-			(scull_u_owner != current->uid) &&  /* allow user */
-			(scull_u_owner != current->euid) && /* allow whoever did su */
+			(scull_u_owner != current->cred->uid) &&  /* allow user */
+			(scull_u_owner != current->cred->euid) && /* allow whoever did su */
 			!capable(CAP_DAC_OVERRIDE)) { /* still allow root */
 		spin_unlock(&scull_u_lock);
 		return -EBUSY;   /* -EPERM would confuse the user */
 	}
 
 	if (scull_u_count == 0)
-		scull_u_owner = current->uid; /* grab it */
+		scull_u_owner = current->cred->uid; /* grab it */
 
 	scull_u_count++;
 	spin_unlock(&scull_u_lock);
@@ -142,7 +142,7 @@ struct file_operations scull_user_fops = {
 	.llseek =     scull_llseek,
 	.read =       scull_read,
 	.write =      scull_write,
-	.ioctl =      scull_ioctl,
+	.unlocked_ioctl =      scull_ioctl,
 	.open =       scull_u_open,
 	.release =    scull_u_release,
 };
@@ -157,13 +157,13 @@ static struct scull_dev scull_w_device;
 static int scull_w_count;	/* initialized to 0 by default */
 static uid_t scull_w_owner;	/* initialized to 0 by default */
 static DECLARE_WAIT_QUEUE_HEAD(scull_w_wait);
-static spinlock_t scull_w_lock = SPIN_LOCK_UNLOCKED;
+static spinlock_t scull_w_lock = __SPIN_LOCK_UNLOCKED(scull_w_lock );
 
 static inline int scull_w_available(void)
 {
 	return scull_w_count == 0 ||
-		scull_w_owner == current->uid ||
-		scull_w_owner == current->euid ||
+		scull_w_owner == current->cred->uid ||
+		scull_w_owner == current->cred->euid ||
 		capable(CAP_DAC_OVERRIDE);
 }
 
@@ -181,7 +181,7 @@ static int scull_w_open(struct inode *inode, struct file *filp)
 		spin_lock(&scull_w_lock);
 	}
 	if (scull_w_count == 0)
-		scull_w_owner = current->uid; /* grab it */
+		scull_w_owner = current->cred->uid; /* grab it */
 	scull_w_count++;
 	spin_unlock(&scull_w_lock);
 
@@ -215,7 +215,7 @@ struct file_operations scull_wusr_fops = {
 	.llseek =     scull_llseek,
 	.read =       scull_read,
 	.write =      scull_write,
-	.ioctl =      scull_ioctl,
+	.unlocked_ioctl =      scull_ioctl,
 	.open =       scull_w_open,
 	.release =    scull_w_release,
 };
@@ -237,7 +237,7 @@ struct scull_listitem {
 
 /* The list of devices, and a lock to protect it */
 static LIST_HEAD(scull_c_list);
-static spinlock_t scull_c_lock = SPIN_LOCK_UNLOCKED;
+static spinlock_t scull_c_lock = __SPIN_LOCK_UNLOCKED(scull_c_lock );
 
 /* A placeholder scull_dev which really just holds the cdev stuff. */
 static struct scull_dev scull_c_device;   
@@ -314,7 +314,7 @@ struct file_operations scull_priv_fops = {
 	.llseek =   scull_llseek,
 	.read =     scull_read,
 	.write =    scull_write,
-	.ioctl =    scull_ioctl,
+	.unlocked_ioctl =    scull_ioctl,
 	.open =     scull_c_open,
 	.release =  scull_c_release,
 };

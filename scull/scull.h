@@ -18,7 +18,10 @@
 #ifndef _SCULL_H_
 #define _SCULL_H_
 
+#include <linux/sched.h>
 #include <linux/ioctl.h> /* needed for the _IOW etc stuff used later */
+
+#define init_MUTEX(LOCKNAME) sema_init(LOCKNAME, 1);
 
 /*
  * Macros to help debugging
@@ -128,7 +131,7 @@ ssize_t scull_read(struct file *filp, char __user *buf, size_t count,
 ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
                     loff_t *f_pos);
 loff_t  scull_llseek(struct file *filp, loff_t off, int whence);
-int     scull_ioctl(struct inode *inode, struct file *filp,
+long    scull_ioctl( struct file *filp,
                     unsigned int cmd, unsigned long arg);
 
 
