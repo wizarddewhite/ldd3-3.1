@@ -638,6 +638,8 @@ int scull_init_module(void)
 		return result;
 	}
 
+	printk("scull: register the major number %d\n", MAJOR(dev));
+
         /* 
 	 * allocate the devices -- we can't have them static, as the number
 	 * can be specified at load time
