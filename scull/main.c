@@ -214,6 +214,9 @@ static struct file_operations scull_proc_ops = {
 static void scull_create_proc(void)
 {
 	struct proc_dir_entry *entry;
+	/* create_proc_read_entry is used to create a read only file
+	 * under /proc
+	 */
 	create_proc_read_entry("scullmem", 0 /* default mode */,
 			NULL /* parent dir */, scull_read_procmem,
 			NULL /* client data */);
