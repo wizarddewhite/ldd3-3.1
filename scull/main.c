@@ -70,6 +70,7 @@ int scull_trim(struct scull_dev *dev)
 	int qset = dev->qset;   /* "dev" is not-null */
 	int i;
 
+	printk("scull_trim: called to clean up all the mem\n");
 	for (dptr = dev->data; dptr; dptr = next) { /* all the list items */
 		if (dptr->data) {
 			for (i = 0; i < qset; i++)
@@ -347,6 +348,7 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 	int item, s_pos, q_pos, rest;
 	ssize_t retval = -ENOMEM; /* value used in "goto out" statements */
 
+	printk("scull_write: pos: %lld, count: %u\n", *f_pos, count);
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;
 
