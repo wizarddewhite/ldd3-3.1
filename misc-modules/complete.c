@@ -28,7 +28,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 static int complete_major = 0;
 
-DECLARE_COMPLETION(comp);
+DECLARE_COMPLETION(comp); // completion is optimized for signal a task completion.
 
 ssize_t complete_read (struct file *filp, char __user *buf, size_t count, loff_t *pos)
 {
