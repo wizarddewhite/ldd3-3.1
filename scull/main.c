@@ -352,7 +352,7 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 	ssize_t retval = -ENOMEM; /* value used in "goto out" statements */
 
 	printk("scull_write: pos: %lld, count: %u\n", *f_pos, count);
-	if (down_interruptible(&dev->sem))
+	if (down_interruptible(&dev->sem)) // before enter critical section
 		return -ERESTARTSYS;
 
 	/* find listitem, qset index and offset in the quantum */
@@ -398,7 +398,7 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 		dev->size = *f_pos;
 
   out:
-	up(&dev->sem);
+	up(&dev->sem); // must up it, before we return
 	return retval;
 }
 
@@ -668,7 +668,7 @@ int scull_init_module(void)
 	for (i = 0; i < scull_nr_devs; i++) {
 		scull_devices[i].quantum = scull_quantum;
 		scull_devices[i].qset = scull_qset;
-		init_MUTEX(&scull_devices[i].sem);
+		init_MUTEX(&scull_devices[i].sem); // must initialize before use
 		scull_setup_cdev(&scull_devices[i], i);
 	}
 
