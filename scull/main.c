@@ -365,6 +365,13 @@ ssize_t scull_write(struct file *filp, const char __user *buf, size_t count,
 	if (dptr == NULL)
 		goto out;
 	if (!dptr->data) {
+		/* Possible place for concurrency,
+		 * Process A tested dptr->data and find it is NULL,
+		 * while Process B wake up and also test it is NULL.
+		 *
+		 * Both of them try to allocate the data which cause
+		 * memory leak.
+		 */
 		dptr->data = kmalloc(qset * sizeof(char *), GFP_KERNEL);
 		if (!dptr->data)
 			goto out;
