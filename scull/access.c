@@ -95,7 +95,8 @@ struct file_operations scull_sngl_fops = {
 static struct scull_dev scull_u_device;
 static int scull_u_count;	/* initialized to 0 by default */
 static uid_t scull_u_owner;	/* initialized to 0 by default */
-static spinlock_t scull_u_lock = __SPIN_LOCK_UNLOCKED(scull_u_lock );
+// spin lock
+static spinlock_t scull_u_lock = __SPIN_LOCK_UNLOCKED(scull_u_lock ); 
 
 static int scull_u_open(struct inode *inode, struct file *filp)
 {
