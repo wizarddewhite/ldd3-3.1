@@ -37,6 +37,7 @@ int main(int argc, char **argv)
 			m = write(1, buffer, n);
 		if ((n < 0 || m < 0) && (errno != EAGAIN))
 			break;
+		printf("in delay\n");
 		sleep(delay);
 	}
 	perror(n < 0 ? "stdin" : "stdout");

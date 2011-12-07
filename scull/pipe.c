@@ -125,7 +125,7 @@ static ssize_t scull_p_read (struct file *filp, char __user *buf, size_t count,
 
 	while (dev->rp == dev->wp) { /* nothing to read */
 		up(&dev->sem); /* release the lock */
-		if (filp->f_flags & O_NONBLOCK)
+		if (filp->f_flags & O_NONBLOCK) // O_NONBLOCK check
 			return -EAGAIN;
 		PDEBUG("\"%s\" reading: going to sleep\n", current->comm);
 		if (wait_event_interruptible(dev->inq, (dev->rp != dev->wp)))
@@ -162,7 +162,7 @@ static int scull_getwritespace(struct scull_pipe *dev, struct file *filp)
 		DEFINE_WAIT(wait);
 		
 		up(&dev->sem);
-		if (filp->f_flags & O_NONBLOCK)
+		if (filp->f_flags & O_NONBLOCK) // O_NONBLOCK check
 			return -EAGAIN;
 		PDEBUG("\"%s\" writing: going to sleep\n",current->comm);
 		prepare_to_wait(&dev->outq, &wait, TASK_INTERRUPTIBLE);
