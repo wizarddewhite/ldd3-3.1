@@ -64,6 +64,7 @@ static int scull_p_open(struct inode *inode, struct file *filp)
 
 	dev = container_of(inode->i_cdev, struct scull_pipe, cdev);
 	filp->private_data = dev;
+	printk("scull_p_open\n");
 
 	if (down_interruptible(&dev->sem))
 		return -ERESTARTSYS;
@@ -143,6 +144,7 @@ static ssize_t scull_p_read (struct file *filp, char __user *buf, size_t count,
 		up (&dev->sem);
 		return -EFAULT;
 	}
+	printk("scull_p_read %c %d\n", *dev->rp, count);
 	dev->rp += count;
 	if (dev->rp == dev->end)
 		dev->rp = dev->buffer; /* wrapped */
@@ -210,6 +212,7 @@ static ssize_t scull_p_write(struct file *filp, const char __user *buf, size_t c
 		up (&dev->sem);
 		return -EFAULT;
 	}
+	printk("scull_p_write %c %d\n", *dev->wp, count);
 	dev->wp += count;
 	if (dev->wp == dev->end)
 		dev->wp = dev->buffer; /* wrapped */
