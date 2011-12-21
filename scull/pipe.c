@@ -228,6 +228,7 @@ static ssize_t scull_p_write(struct file *filp, const char __user *buf, size_t c
 	return count;
 }
 
+/* poll/select system call will call this function */
 static unsigned int scull_p_poll(struct file *filp, poll_table *wait)
 {
 	struct scull_pipe *dev = filp->private_data;
