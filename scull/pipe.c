@@ -97,6 +97,7 @@ static int scull_p_release(struct inode *inode, struct file *filp)
 	struct scull_pipe *dev = filp->private_data;
 
 	/* remove this filp from the asynchronously notified filp's */
+	printk("scull_p_release\n");
 	scull_p_fasync(-1, filp, 0);
 	down(&dev->sem);
 	if (filp->f_mode & FMODE_READ)
@@ -257,6 +258,7 @@ static unsigned int scull_p_poll(struct file *filp, poll_table *wait)
 static int scull_p_fasync(int fd, struct file *filp, int mode)
 {
 	struct scull_pipe *dev = filp->private_data;
+	printk("scull_p_fasync \n");
 
 	return fasync_helper(fd, filp, mode, &dev->async_queue);
 }

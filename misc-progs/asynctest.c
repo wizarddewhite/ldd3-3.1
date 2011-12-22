@@ -23,6 +23,7 @@
 int gotdata=0;
 void sighandler(int signo)
 {
+    printf("get a signal \n");
     if (signo==SIGIO)
         gotdata++;
     return;
