@@ -566,7 +566,7 @@ loff_t scull_llseek(struct file *filp, loff_t off, int whence)
 
 struct file_operations scull_fops = {
 	.owner =    THIS_MODULE,
-	.llseek =   scull_llseek,
+	.llseek =   scull_llseek, // lseek function for this device file
 	.read =     scull_read,
 	.write =    scull_write,
 	.unlocked_ioctl =    scull_ioctl,

@@ -30,6 +30,9 @@ int main(int argc, char **argv)
     struct pollfd pfd;
     int n;
 
+    if (lseek(0, 0, SEEK_END) == -1)
+	    perror("error in lseek stdin");
+
     fcntl(0, F_SETFL, fcntl(0,F_GETFL) | O_NONBLOCK); /* stdin */
     pfd.fd = 0;  /* stdin */
     pfd.events = POLLIN;

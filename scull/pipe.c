@@ -87,7 +87,7 @@ static int scull_p_open(struct inode *inode, struct file *filp)
 		dev->nwriters++;
 	up(&dev->sem);
 
-	return nonseekable_open(inode, filp);
+	return nonseekable_open(inode, filp); // lseek is forbidden for this file
 }
 
 
@@ -318,7 +318,7 @@ static int scull_read_p_mem(char *buf, char **start, off_t offset, int count,
  */
 struct file_operations scull_pipe_fops = {
 	.owner =	THIS_MODULE,
-	.llseek =	no_llseek,
+	.llseek =	no_llseek, // non lseek
 	.read =		scull_p_read,
 	.write =	scull_p_write,
 	.poll =		scull_p_poll,
