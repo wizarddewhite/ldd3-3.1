@@ -47,14 +47,14 @@ static dev_t scull_a_firstdev;  /* Where our range begins */
  */
 
 static struct scull_dev scull_s_device;
-static atomic_t scull_s_available = ATOMIC_INIT(1);
+static atomic_t scull_s_available = ATOMIC_INIT(1);// single user
 
 static int scull_s_open(struct inode *inode, struct file *filp)
 {
 	struct scull_dev *dev = &scull_s_device; /* device information */
 
 	if (! atomic_dec_and_test (&scull_s_available)) {
-		atomic_inc(&scull_s_available);
+		atomic_inc(&scull_s_available); 
 		return -EBUSY; /* already open */
 	}
 
@@ -94,7 +94,7 @@ struct file_operations scull_sngl_fops = {
 
 static struct scull_dev scull_u_device;
 static int scull_u_count;	/* initialized to 0 by default */
-static uid_t scull_u_owner;	/* initialized to 0 by default */
+static uid_t scull_u_owner;	/* initialized to 0 by default */ // the owner now
 // spin lock
 static spinlock_t scull_u_lock = __SPIN_LOCK_UNLOCKED(scull_u_lock ); 
 
@@ -177,6 +177,7 @@ static int scull_w_open(struct inode *inode, struct file *filp)
 	while (! scull_w_available()) {
 		spin_unlock(&scull_w_lock);
 		if (filp->f_flags & O_NONBLOCK) return -EAGAIN;
+		// wait instead of return -EBUSY
 		if (wait_event_interruptible (scull_w_wait, scull_w_available()))
 			return -ERESTARTSYS; /* tell the fs layer to handle it */
 		spin_lock(&scull_w_lock);
@@ -283,7 +284,7 @@ static int scull_c_open(struct inode *inode, struct file *filp)
 
 	/* look for a scullc device in the list */
 	spin_lock(&scull_c_lock);
-	dev = scull_c_lookfor_device(key);
+	dev = scull_c_lookfor_device(key); // clone one
 	spin_unlock(&scull_c_lock);
 
 	if (!dev)
