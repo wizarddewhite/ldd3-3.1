@@ -15,7 +15,8 @@
  * $Id: jit.c,v 1.16 2004/09/26 07:02:43 gregkh Exp $
  */
 
-#include <linux/config.h>
+//#include <linux/config.h>
+#include <linux/sched.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
 #include <linux/init.h>
@@ -97,11 +98,13 @@ int jit_currentime(char *buf, char **start, off_t offset,
 	struct timeval tv1;
 	struct timespec tv2;
 	unsigned long j1;
+	cycles_t cycles;
 	u64 j2;
 
 	/* get them four */
 	j1 = jiffies;
 	j2 = get_jiffies_64();
+	cycles = get_cycles();
 	do_gettimeofday(&tv1);
 	tv2 = current_kernel_time();
 
@@ -112,6 +115,7 @@ int jit_currentime(char *buf, char **start, off_t offset,
 		       j1, j2,
 		       (int) tv1.tv_sec, (int) tv1.tv_usec,
 		       (int) tv2.tv_sec, (int) tv2.tv_nsec);
+	len += sprintf(buf+len, "cycles      %016Lx\n",sizeof(cycles_t), cycles);
 	*start = buf;
 	return len;
 }
