@@ -65,19 +65,19 @@ int jit_fn(char *buf, char **start, off_t offset,
 	j1 = j0 + delay;
 
 	switch((long)data) {
-		case JIT_BUSY:
+		case JIT_BUSY:// jitbusy
 			while (time_before(jiffies, j1))
 				cpu_relax();
 			break;
-		case JIT_SCHED:
+		case JIT_SCHED:// jitsched
 			while (time_before(jiffies, j1)) {
 				schedule();
 			}
 			break;
-		case JIT_QUEUE:
+		case JIT_QUEUE:// jitqueue
 			wait_event_interruptible_timeout(wait, 0, delay);
 			break;
-		case JIT_SCHEDTO:
+		case JIT_SCHEDTO:// jitschedto
 			set_current_state(TASK_INTERRUPTIBLE);
 			schedule_timeout (delay);
 			break;
