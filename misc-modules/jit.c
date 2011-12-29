@@ -157,6 +157,7 @@ void jit_timer_fn(unsigned long arg)
 }
 
 /* the /proc function: allocate everything to allow concurrency */
+/* this is used to test the kernel timer */
 int jit_timer(char *buf, char **start, off_t offset,
 	      int len, int *eof, void *unused_data)
 {
