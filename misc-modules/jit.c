@@ -209,7 +209,7 @@ void jit_tasklet_fn(unsigned long arg)
 
 	if (--data->loops) {
 		data->prevjiffies = j;
-		if (data->hi)
+		if (data->hi) /* register itself */
 			tasklet_hi_schedule(&data->tlet);
 		else
 			tasklet_schedule(&data->tlet);
@@ -247,7 +247,7 @@ int jit_tasklet(char *buf, char **start, off_t offset,
 	/* register the tasklet */
 	tasklet_init(&data->tlet, jit_tasklet_fn, (unsigned long)data);
 	data->hi = hi;
-	if (hi)
+	if (hi) /* run tasklet */
 		tasklet_hi_schedule(&data->tlet);
 	else
 		tasklet_schedule(&data->tlet);
