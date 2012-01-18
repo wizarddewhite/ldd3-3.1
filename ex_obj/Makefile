@@ -1,5 +1,5 @@
 # Comment/uncomment the following line to disable/enable debugging
-DEBUG = y
+#DEBUG = y
 
 
 # Add your debugging flag (or not) to CFLAGS
@@ -10,14 +10,11 @@ else
 endif
 
 EXTRA_CFLAGS += $(DEBFLAGS)
-EXTRA_CFLAGS += -I$(LDDINC)
 
 ifneq ($(KERNELRELEASE),)
 # call from kernel build system
 
-scull-objs := main.o pipe.o access.o ex_obj.o
-
-obj-m	:= scull.o
+obj-y	:= ex_obj.o
 
 else
 
@@ -26,8 +23,7 @@ KERNELDIR ?= ../../linux-2.6
 PWD       := $(shell pwd)
 
 modules:
-	cp ../ex_obj/ex_obj.o ex_obj.o_shipped
-	$(MAKE) -C $(KERNELDIR) M=$(PWD) LDDINC=$(PWD)/../include modules
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) 
 
 endif
 

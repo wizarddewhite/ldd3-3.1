@@ -628,6 +628,7 @@ static void scull_setup_cdev(struct scull_dev *dev, int index)
 		printk(KERN_NOTICE "Error %d adding scull%d", err, index);
 }
 
+int ex_test(int a, int b);
 
 int scull_init_module(void)
 {
@@ -651,6 +652,7 @@ int scull_init_module(void)
 		return result;
 	}
 
+	printk("scull: calling ex_test(15, 5) %d\n", ex_test(15, 5));
 	printk("scull: register the major number %d,%d\n", MAJOR(dev), MINOR(dev));
 
         /* 
