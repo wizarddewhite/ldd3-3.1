@@ -29,12 +29,9 @@ modules:
 	cp ../ex_obj/ex_obj.o ex_obj.o_shipped
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) LDDINC=$(PWD)/../include modules
 
-endif
-
-
-
 clean:
-	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
+	$(MAKE) -C $(KERNELDIR) M=$(PWD) clean
+endif
 
 depend .depend dep:
 	$(CC) $(CFLAGS) -M *.c > .depend
